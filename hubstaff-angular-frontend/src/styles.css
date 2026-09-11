@@ -1,0 +1,172 @@
+/* =========================================================
+   PostHub Global Theme
+   ========================================================= */
+
+:root {
+  /* PostHub brand colors */
+  --primary: #f15a24;
+  --primary-dark: #d83a17;
+  --primary-light: #fff0e9;
+
+  --navy: #123f5c;
+  --navy-dark: #0d2f45;
+  --navy-light: #eaf1f5;
+
+  /* UI colors */
+  --background: #f5f7f8;
+  --surface: #ffffff;
+  --border: #e2e8eb;
+
+  --text-primary: #17221f;
+  --text-secondary: #687873;
+  --text-muted: #98a4a1;
+
+  /* Status */
+  --success: #3c8068;
+  --success-light: #eaf5ef;
+
+  --warning: #c88738;
+  --warning-light: #fff4df;
+
+  --danger: #d83a17;
+  --danger-light: #fff0e9;
+
+  --purple: #77639b;
+  --purple-light: #eeeaf5;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* =========================================================
+   PostHub Theme Overrides
+   ========================================================= */
+
+/* Sidebar */
+.sidebar {
+  background: var(--navy-dark) !important;
+}
+
+/* Logo / Brand */
+.brand-mark {
+  background: var(--primary) !important;
+}
+
+/* Sidebar active menu */
+.nav button:hover,
+.nav button.active,
+.sidebar-bottom button:hover,
+.sidebar-bottom button.active {
+  background: var(--navy) !important;
+}
+
+/* Main action button */
+.clock-btn {
+  background: var(--primary) !important;
+}
+
+.clock-btn:hover {
+  background: var(--primary-dark) !important;
+}
+
+/* Clock out */
+.clock-btn.out {
+  background: var(--navy) !important;
+}
+
+/* Primary text */
+.text-btn {
+  color: var(--primary) !important;
+}
+
+/* Primary borders */
+.outline-btn:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+/* Focused inputs */
+.panel-actions input:focus {
+  border-color: var(--primary) !important;
+}
+
+/* Live indicator */
+.live-dot {
+  color: var(--success) !important;
+}
+
+/* =========================================================
+   PostHub Status Colors
+   ========================================================= */
+
+.status.pending {
+  background: var(--warning-light) !important;
+  color: var(--warning) !important;
+}
+
+.status.approved,
+.status.present {
+  background: var(--success-light) !important;
+  color: var(--success) !important;
+}
+
+.status.late {
+  background: var(--danger-light) !important;
+  color: var(--danger) !important;
+}
+
+.status.onleave {
+  background: var(--purple-light) !important;
+  color: var(--purple) !important;
+}
+
+/* =========================================================
+   Dashboard Icons
+   ========================================================= */
+
+.stat-icon.blue {
+  background: var(--navy-light) !important;
+  color: var(--navy) !important;
+}
+
+.stat-icon.green {
+  background: var(--success-light) !important;
+  color: var(--success) !important;
+}
+
+.stat-icon.orange {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+.stat-icon.purple {
+  background: var(--purple-light) !important;
+  color: var(--purple) !important;
+}
+
+/* =========================================================
+   Avatar
+   ========================================================= */
+
+.avatar {
+  background: #e7eef1 !important;
+  color: var(--navy) !important;
+}

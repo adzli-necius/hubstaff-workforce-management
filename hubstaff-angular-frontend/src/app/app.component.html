@@ -1,0 +1,92 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">H</div>
+      <div>
+        <div class="brand-name">Post Hub</div>
+        <div class="brand-subtitle">Workforce Management</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label">MAIN</div>
+      <button
+        routerLink="/dashboard"
+        routerLinkActive="active"
+      >
+        <span>⌂</span>
+        Dashboard
+      </button>
+      <button
+        routerLink="/attendance"
+        routerLinkActive="active"
+      >
+        <span>◷</span>
+        Attendance
+      </button>
+      <button 
+        routerLink="/leave"
+        routerLinkActive="active"
+      >
+        <span>▣</span> Leave
+      </button>
+
+      <div class="nav-label">MANAGEMENT</div>
+      <button
+        routerLink="/employees"
+        routerLinkActive="active"
+       >
+        <span>♙</span> Employees
+      </button>
+      <button [class.active]="activePage === 'Reports'" (click)="setPage('Reports')">
+        <span>▤</span> Reports
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button [class.active]="activePage === 'Settings'" (click)="setPage('Settings')">
+        <span>⚙</span> Settings
+      </button>
+      <div class="mini-profile">
+        <div class="avatar">AH</div>
+        <div class="profile-copy">
+          <strong>Ahmad Hakim</strong>
+          <span>Administrator</span>
+        </div>
+        <span class="dots">•••</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="breadcrumb">Workspace / <strong>{{ activePage }}</strong></div>
+        <h1>{{ activePage }}</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn">⌕</button>
+        <button class="icon-btn notification">♢<i></i></button>
+        <div class="top-profile">
+          <div class="avatar small">AH</div>
+          <div><strong>Ahmad Hakim</strong><span>Owner</span></div>
+          <span>⌄</span>
+        </div>
+      </div>
+    </header>
+
+    
+
+    <!-- <section class="content placeholder" *ngIf="activePage !== 'Dashboard'">
+      <div class="placeholder-card">
+        <div class="placeholder-icon">✦</div>
+        <h2>{{ activePage }}</h2>
+        <p>This module is ready for the next FE implementation.</p>
+        <button class="clock-btn" (click)="setPage('Dashboard')">← Back to Dashboard</button>
+      </div>
+    </section> -->
+    <router-outlet></router-outlet>
+  </main>
+
+  
+</div>

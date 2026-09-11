@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "hubstaff-backend"
+		},
+		{
+			"path": "hubstaff-angular-frontend"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "disabled",
+		"java.compile.nullAnalysis.mode": "automatic",
+		"liveServer.settings.multiRootWorkspaceName": "hubstaff-backend"
+	}
+}

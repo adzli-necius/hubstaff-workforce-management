@@ -1,0 +1,183 @@
+<div class="attendance-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div>
+      <h2>Attendance</h2>
+
+      <p>
+        Manage your daily attendance
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- Attendance Card -->
+  <div class="attendance-card">
+
+    <!-- Status -->
+    <div class="status-badge">
+
+      <span></span>
+
+      {{ clockedIn ? 'Currently Clocked In' : 'Not Clocked In' }}
+
+    </div>
+
+
+    <!-- Current Time -->
+    <div class="clock">
+
+      {{ currentTime | date:'hh:mm:ss a' }}
+
+    </div>
+
+
+    <!-- Current Date -->
+    <div class="date">
+
+      {{ currentTime | date:'EEEE, d MMMM y' }}
+
+    </div>
+
+
+    <!-- Clock Button -->
+    <button
+      class="clock-button"
+      [class.clock-out]="clockedIn"
+      (click)="clockAction()"
+    >
+
+      {{ clockedIn ? '↪ Clock Out' : '↗ Clock In' }}
+
+    </button>
+
+
+    <!-- Attendance Summary -->
+    <div class="attendance-summary">
+
+      <div>
+
+        <span>Clock In</span>
+
+        <strong>
+          {{ clockInTime ? (clockInTime | date:'hh:mm a') : '--' }}
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span>Clock Out</span>
+
+        <strong>
+          {{ clockOutTime ? (clockOutTime | date:'hh:mm a') : '--' }}
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span>Status</span>
+
+        <strong>
+          {{ clockedIn ? 'Working' : 'Not Working' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       Confirmation Modal
+       ===================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showClockModal"
+    (click)="cancelClockAction()"
+  >
+
+    <div
+      class="clock-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- Icon -->
+      <div class="modal-icon">
+
+        {{ pendingClockAction === 'in' ? '↗' : '↪' }}
+
+      </div>
+
+
+      <!-- Title -->
+      <h3>
+        Are you sure?
+      </h3>
+
+
+      <!-- Description -->
+      <p>
+
+        Are you sure you want to
+
+        <strong>
+          {{ pendingClockAction === 'in' ? 'clock in' : 'clock out' }}
+        </strong>?
+
+      </p>
+
+
+      <!-- Current Time -->
+      <div class="modal-time">
+
+        <span>
+          Current time
+        </span>
+
+        <strong>
+          {{ currentTime | date:'hh:mm:ss a' }}
+        </strong>
+
+      </div>
+
+
+      <!-- Actions -->
+      <div class="modal-actions">
+
+        <button
+          class="cancel-button"
+          (click)="cancelClockAction()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          class="confirm-button"
+          [class.confirm-out]="pendingClockAction === 'out'"
+          (click)="confirmClockAction()"
+        >
+
+          {{ pendingClockAction === 'in'
+              ? 'Clock In'
+              : 'Clock Out'
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

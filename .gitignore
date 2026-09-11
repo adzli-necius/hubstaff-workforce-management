@@ -1,0 +1,18 @@
+# Angular / Node dependencies and build output
+hubstaff-angular-frontend/node_modules/
+hubstaff-angular-frontend/dist/
+hubstaff-angular-frontend/.angular/
+
+# Spring Boot build output
+hubstaff-backend/target/
+
+# Secrets / local configuration
+.env
+.env.*
+application-local.properties
+application-prod.properties
+
+# IDE files
+.idea/
+.vscode/
+*.iml

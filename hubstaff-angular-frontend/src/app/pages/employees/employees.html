@@ -1,0 +1,448 @@
+<section class="employees-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">WORKFORCE</p>
+      <h2>Employees</h2>
+      <p class="page-description">
+        Manage your hub employees and their employment information.
+      </p>
+    </div>
+
+    <button class="primary-btn" (click)="openAddForm()">
+      <span>+</span>
+      Add Employee
+    </button>
+  </div>
+
+
+  <!-- Stats -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon total">👥</div>
+
+      <div>
+        <span class="stat-label">Total Employees</span>
+        <strong>{{ totalCount }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active">✓</div>
+
+      <div>
+        <span class="stat-label">Active</span>
+        <strong>{{ activeCount }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon inactive">−</div>
+
+      <div>
+        <span class="stat-label">Inactive</span>
+        <strong>{{ inactiveCount }}</strong>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Employee List -->
+  <div class="content-card">
+
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p *ngIf="isLoading" class="loading-message">Loading employees...</p>
+
+    <div class="card-header">
+
+      <div>
+        <h3>Employee Directory</h3>
+        <p>{{ filteredEmployees.length }} employees found</p>
+      </div>
+
+      <div class="filters">
+
+        <!-- Search -->
+        <div class="search-box">
+          <span>⌕</span>
+
+          <input
+            type="text"
+            [(ngModel)]="search"
+            placeholder="Search employees..."
+          />
+        </div>
+
+        <!-- Role -->
+        <select [(ngModel)]="selectedRole">
+          <option value="All">All Roles</option>
+          <option value="Supervisor">Supervisor</option>
+          <option value="Hub Assistant">Hub Assistant</option>
+          <option value="Counter Staff">Counter Staff</option>
+          <option value="Delivery Handler">Delivery Handler</option>
+        </select>
+
+        <!-- Status -->
+        <select [(ngModel)]="selectedStatus">
+          <option value="All">All Status</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- Table -->
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>EMPLOYEE</th>
+            <th>EMPLOYEE ID</th>
+            <th>ROLE</th>
+            <th>PHONE</th>
+            <th>JOIN DATE</th>
+            <th>STATUS</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let employee of filteredEmployees">
+
+            <!-- Employee -->
+            <td>
+              <div class="employee-cell">
+
+                <div class="avatar">
+                  {{ getInitials(employee.name) }}
+                </div>
+
+                <div>
+                  <strong>{{ employee.name }}</strong>
+                  <span>{{ employee.role }}</span>
+                </div>
+
+              </div>
+            </td>
+
+            <!-- ID -->
+            <td>
+              <span class="employee-id">
+                {{ employee.employeeId }}
+              </span>
+            </td>
+
+            <!-- Role -->
+            <td>
+              {{ employee.role }}
+            </td>
+
+            <!-- Phone -->
+            <td>
+              {{ employee.phone }}
+            </td>
+
+            <!-- Join Date -->
+            <td>
+              {{ employee.joinDate | date:'dd MMM y' }}
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span
+                class="status-badge"
+                [class.active]="employee.status === 'Active'"
+                [class.inactive]="employee.status === 'Inactive'"
+              >
+                <i></i>
+                {{ employee.status }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td>
+              <button
+                class="view-btn"
+                (click)="viewEmployee(employee)"
+              >
+                View
+              </button>
+            </td>
+
+          </tr>
+
+
+          <!-- Empty -->
+          <tr *ngIf="filteredEmployees.length === 0">
+
+            <td colspan="7">
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  ⌕
+                </div>
+
+                <strong>No employees found</strong>
+
+                <span>
+                  Try changing your search or filters.
+                </span>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- Employee Details Modal -->
+<div
+  class="modal-backdrop"
+  *ngIf="showDetails"
+  (click)="closeDetails()"
+>
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+        <span class="modal-eyebrow">EMPLOYEE DETAILS</span>
+        <h3>{{ selectedEmployee?.name }}</h3>
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeDetails()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="employee-profile">
+
+      <div class="large-avatar">
+        {{ getInitials(selectedEmployee?.name || '') }}
+      </div>
+
+      <div>
+        <strong>{{ selectedEmployee?.name }}</strong>
+        <span>{{ selectedEmployee?.role }}</span>
+      </div>
+
+    </div>
+
+
+    <div class="details-grid">
+
+      <div class="detail-item">
+        <span>Employee ID</span>
+        <strong>{{ selectedEmployee?.employeeId }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Status</span>
+        <strong>{{ selectedEmployee?.status }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Phone</span>
+        <strong>{{ selectedEmployee?.phone }}</strong>
+      </div>
+
+      <div class="detail-item">
+        <span>Join Date</span>
+        <strong>{{ selectedEmployee?.joinDate | date:'dd MMM y' }}</strong>
+      </div>
+
+      <div class="detail-item full">
+        <span>Role</span>
+        <strong>{{ selectedEmployee?.role }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="danger-btn"
+        (click)="deleteEmployee(selectedEmployee!)"
+      >
+        Delete
+      </button>
+
+      <div class="right-actions">
+
+        <button
+          class="secondary-btn"
+          (click)="closeDetails()"
+        >
+          Close
+        </button>
+
+        <button
+          class="primary-btn"
+          (click)="openEditForm(selectedEmployee!)"
+        >
+          Edit Employee
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- Add / Edit Employee Modal -->
+<div
+  class="modal-backdrop"
+  *ngIf="showForm"
+  (click)="closeForm()"
+>
+
+  <div
+    class="modal form-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+        <span class="modal-eyebrow">
+          {{ isEditing ? 'EDIT EMPLOYEE' : 'NEW EMPLOYEE' }}
+        </span>
+
+        <h3>
+          {{ isEditing ? 'Edit Employee' : 'Add Employee' }}
+        </h3>
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeForm()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <label>Full Name</label>
+
+        <input
+          type="text"
+          [(ngModel)]="formEmployee.name"
+          placeholder="Enter full name"
+        />
+      </div>
+
+
+      <div class="form-group">
+        <label>Employee ID</label>
+
+        <input
+          type="text"
+          [(ngModel)]="formEmployee.employeeId"
+          placeholder="e.g. PH-0007"
+        />
+      </div>
+
+
+      <div class="form-group">
+        <label>Phone</label>
+
+        <input
+          type="text"
+          [(ngModel)]="formEmployee.phone"
+          placeholder="e.g. 012-345 6789"
+        />
+      </div>
+
+
+      <div class="form-group">
+        <label>Role</label>
+
+        <select [(ngModel)]="formEmployee.role">
+          <option value="Supervisor">Supervisor</option>
+          <option value="Hub Assistant">Hub Assistant</option>
+          <option value="Counter Staff">Counter Staff</option>
+          <option value="Delivery Handler">Delivery Handler</option>
+        </select>
+      </div>
+
+
+      <div class="form-group">
+        <label>Join Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="formEmployee.joinDate"
+        />
+      </div>
+
+
+      <div class="form-group">
+        <label>Status</label>
+
+        <select [(ngModel)]="formEmployee.status">
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        (click)="closeForm()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="primary-btn"
+        (click)="saveEmployee()"
+      >
+        {{ isEditing ? 'Save Changes' : 'Add Employee' }}
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

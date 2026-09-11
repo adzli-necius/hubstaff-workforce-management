@@ -1,0 +1,504 @@
+<section class="content">
+
+  <!-- ================================
+       PAGE HEADER
+       ================================ -->
+
+  <div class="page-header">
+
+    <div>
+      <h2>Leave Management</h2>
+      <p>Review and manage employee leave applications.</p>
+    </div>
+
+  </div>
+
+
+  <!-- ================================
+       STATISTICS
+       ================================ -->
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+
+      <div class="stat-icon orange">
+        ◷
+      </div>
+
+      <div>
+        <span>Pending</span>
+        <strong>{{ pendingCount }}</strong>
+        <small>Awaiting approval</small>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon green">
+        ✓
+      </div>
+
+      <div>
+        <span>Approved</span>
+        <strong>{{ approvedCount }}</strong>
+        <small>Applications</small>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon red">
+        ×
+      </div>
+
+      <div>
+        <span>Rejected</span>
+        <strong>{{ rejectedCount }}</strong>
+        <small>Applications</small>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon blue">
+        ▣
+      </div>
+
+      <div>
+        <span>Total Requests</span>
+        <strong>{{ leaveApplications.length }}</strong>
+        <small>All applications</small>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================
+       LEAVE APPLICATIONS
+       ================================ -->
+
+  <div class="panel leave-panel">
+
+    <div class="panel-heading">
+
+      <div>
+        <h3>Leave Applications</h3>
+        <p>Employee leave requests</p>
+      </div>
+
+    </div>
+
+
+    <!-- ================================
+         FILTERS
+         ================================ -->
+
+    <div class="filters">
+
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Search employee..."
+      />
+
+
+      <select [(ngModel)]="selectedStatus">
+
+        <option value="All">
+          All Status
+        </option>
+
+        <option value="Pending">
+          Pending
+        </option>
+
+        <option value="Approved">
+          Approved
+        </option>
+
+        <option value="Rejected">
+          Rejected
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- ================================
+         TABLE
+         ================================ -->
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>EMPLOYEE</th>
+
+            <th>LEAVE TYPE</th>
+
+            <th>DATE</th>
+
+            <th>DAYS</th>
+
+            <th>APPLIED</th>
+
+            <th>STATUS</th>
+
+            <th>ACTION</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="let leave of filteredApplications"
+          >
+
+            <!-- Employee -->
+
+            <td>
+
+              <div class="employee-cell">
+
+                <div class="avatar">
+                  {{ getInitials(leave.employee) }}
+                </div>
+
+                <div>
+
+                  <strong>
+                    {{ leave.employee }}
+                  </strong>
+
+                  <span>
+                    {{ leave.role }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- Leave Type -->
+
+            <td>
+              {{ leave.type }}
+            </td>
+
+
+            <!-- Date -->
+
+            <td>
+
+              <div class="date-cell">
+
+                <strong>
+                  {{ leave.startDate }}
+                </strong>
+
+                <span>
+                  to {{ leave.endDate }}
+                </span>
+
+              </div>
+
+            </td>
+
+
+            <!-- Days -->
+
+            <td>
+              {{ leave.days }}
+              {{ leave.days === 1 ? 'day' : 'days' }}
+            </td>
+
+
+            <!-- Applied Date -->
+
+            <td>
+              {{ leave.appliedDate }}
+            </td>
+
+
+            <!-- Status -->
+
+            <td>
+
+              <span
+                class="status"
+                [class.pending]="leave.status === 'Pending'"
+                [class.approved]="leave.status === 'Approved'"
+                [class.rejected]="leave.status === 'Rejected'"
+              >
+                {{ leave.status }}
+              </span>
+
+            </td>
+
+
+            <!-- Action -->
+
+            <td>
+
+              <button
+                class="view-btn"
+                (click)="viewDetails(leave)"
+              >
+                View
+              </button>
+
+            </td>
+
+          </tr>
+
+
+          <!-- Empty -->
+
+          <tr
+            *ngIf="filteredApplications.length === 0"
+          >
+
+            <td
+              colspan="7"
+              class="empty-state"
+            >
+              No leave applications found.
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ===================================
+     LEAVE DETAILS MODAL
+     =================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showDetails"
+  (click)="closeDetails()"
+>
+
+  <div
+    class="modal"
+    *ngIf="selectedLeave"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Modal Header -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-label">
+          Leave Application
+        </span>
+
+        <h2>
+          {{ selectedLeave.employee }}
+        </h2>
+
+      </div>
+
+
+      <button
+        class="close-btn"
+        (click)="closeDetails()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- Employee -->
+
+    <div class="modal-profile">
+
+      <div class="avatar large">
+        {{ getInitials(selectedLeave.employee) }}
+      </div>
+
+      <div>
+
+        <strong>
+          {{ selectedLeave.employee }}
+        </strong>
+
+        <span>
+          {{ selectedLeave.role }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Leave Details -->
+
+    <div class="details-grid">
+
+      <div class="detail">
+
+        <span>Leave Type</span>
+
+        <strong>
+          {{ selectedLeave.type }}
+        </strong>
+
+      </div>
+
+
+      <div class="detail">
+
+        <span>Status</span>
+
+        <strong>
+
+          <span
+            class="status"
+            [class.pending]="selectedLeave.status === 'Pending'"
+            [class.approved]="selectedLeave.status === 'Approved'"
+            [class.rejected]="selectedLeave.status === 'Rejected'"
+          >
+            {{ selectedLeave.status }}
+          </span>
+
+        </strong>
+
+      </div>
+
+
+      <div class="detail">
+
+        <span>Start Date</span>
+
+        <strong>
+          {{ selectedLeave.startDate }}
+        </strong>
+
+      </div>
+
+
+      <div class="detail">
+
+        <span>End Date</span>
+
+        <strong>
+          {{ selectedLeave.endDate }}
+        </strong>
+
+      </div>
+
+
+      <div class="detail">
+
+        <span>Duration</span>
+
+        <strong>
+          {{ selectedLeave.days }}
+          {{ selectedLeave.days === 1 ? 'Day' : 'Days' }}
+        </strong>
+
+      </div>
+
+
+      <div class="detail">
+
+        <span>Applied Date</span>
+
+        <strong>
+          {{ selectedLeave.appliedDate }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Reason -->
+
+    <div class="reason">
+
+      <span>
+        Reason
+      </span>
+
+      <p>
+        {{ selectedLeave.reason }}
+      </p>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div
+      class="modal-actions"
+      *ngIf="selectedLeave.status === 'Pending'"
+    >
+
+      <button
+        class="reject-btn"
+        (click)="rejectLeave(selectedLeave)"
+      >
+        Reject
+      </button>
+
+
+      <button
+        class="approve-btn"
+        (click)="approveLeave(selectedLeave)"
+      >
+        Approve
+      </button>
+
+    </div>
+
+
+    <div
+      class="modal-actions"
+      *ngIf="selectedLeave.status !== 'Pending'"
+    >
+
+      <button
+        class="outline-btn"
+        (click)="closeDetails()"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
