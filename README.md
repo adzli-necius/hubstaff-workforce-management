@@ -37,6 +37,8 @@ hubstaff-workforce-management/
 
    The API starts on `http://localhost:8080`.
 
+   Check that it is reachable at `GET http://localhost:8080/api/status`.
+
 ### Frontend
 
 1. Install dependencies:

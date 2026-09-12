@@ -17,6 +17,18 @@
   <!-- Attendance Card -->
   <div class="attendance-card">
 
+    <label class="employee-selector">
+      <span>Employee</span>
+      <select [(ngModel)]="selectedEmployeeId" (ngModelChange)="onEmployeeChange()">
+        <option [ngValue]="null">Select an employee</option>
+        <option *ngFor="let employee of employees" [ngValue]="employee.id">
+          {{ employee.firstName }} {{ employee.lastName }} ({{ employee.employeeCode }})
+        </option>
+      </select>
+    </label>
+
+    <p *ngIf="errorMessage" class="attendance-error">{{ errorMessage }}</p>
+
     <!-- Status -->
     <div class="status-badge">
 
@@ -47,6 +59,7 @@
     <button
       class="clock-button"
       [class.clock-out]="clockedIn"
+      [disabled]="isSubmitting"
       (click)="clockAction()"
     >
 
@@ -164,12 +177,13 @@
         <button
           class="confirm-button"
           [class.confirm-out]="pendingClockAction === 'out'"
+          [disabled]="isSubmitting"
           (click)="confirmClockAction()"
         >
 
           {{ pendingClockAction === 'in'
-              ? 'Clock In'
-              : 'Clock Out'
+              ? (isSubmitting ? 'Clocking In...' : 'Clock In')
+              : (isSubmitting ? 'Clocking Out...' : 'Clock Out')
           }}
 
         </button>

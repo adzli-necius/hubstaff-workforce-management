@@ -1,5 +1,17 @@
 <section class="employees-page">
 
+  <div
+    *ngIf="notificationMessage"
+    class="notification-toast"
+    [class.success]="notificationType === 'success'"
+    [class.error]="notificationType === 'error'"
+    role="status"
+    aria-live="polite"
+  >
+    <span aria-hidden="true">{{ notificationType === 'success' ? '✓' : '!' }}</span>
+    {{ notificationMessage }}
+  </div>
+
   <!-- Page Header -->
   <div class="page-header">
     <div>
@@ -358,16 +370,25 @@
 
     <div class="form-grid">
 
-      <div class="form-group full">
-        <label>Full Name</label>
+      <div class="form-group">
+        <label>First Name</label>
 
         <input
           type="text"
-          [(ngModel)]="formEmployee.name"
-          placeholder="Enter full name"
+          [(ngModel)]="formEmployee.firstName"
+          placeholder="Enter first name"
         />
       </div>
 
+      <div class="form-group">
+        <label>Last Name</label>
+
+        <input
+          type="text"
+          [(ngModel)]="formEmployee.lastName"
+          placeholder="Enter last name"
+        />
+      </div>
 
       <div class="form-group">
         <label>Employee ID</label>

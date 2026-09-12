@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 const API_URL = 'http://localhost:8080/api/employees';
 
+export type EmploymentStatus = 'active' | 'inactive';
+
 export interface ApiResponse<T> {
   status: number;
   code: string;
@@ -22,7 +24,7 @@ export interface EmployeeApiModel {
   role: string;
   phone: string | null;
   managerId: number | null;
-  employmentStatus: string;
+  employmentStatus: EmploymentStatus;
   hireDate: string;
 }
 
@@ -33,7 +35,7 @@ export interface EmployeeRequest {
   role: string;
   phone: string;
   managerId: number | null;
-  employmentStatus: string;
+  employmentStatus: EmploymentStatus;
   hireDate: string;
 }
 

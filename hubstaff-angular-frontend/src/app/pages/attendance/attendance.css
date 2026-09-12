@@ -41,6 +41,37 @@
   text-align: center;
 }
 
+.employee-selector {
+  display: flex;
+  flex-direction: column;
+  max-width: 360px;
+  margin: 0 auto 18px;
+  gap: 6px;
+  text-align: left;
+}
+
+.employee-selector span {
+  color: #64716d;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.employee-selector select {
+  height: 38px;
+  border: 1px solid #dce4e1;
+  border-radius: 8px;
+  padding: 0 10px;
+  color: #17221f;
+  background: #fff;
+}
+
+.attendance-error {
+  max-width: 460px;
+  margin: 0 auto 16px;
+  color: #b42318;
+  font-size: 12px;
+}
+
 
 /* Status */
 
@@ -358,4 +389,11 @@
     transform: translateY(0) scale(1);
   }
 
+}
+
+.clock-button:disabled,
+.confirm-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
 }

@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { EmployeeApiModel, EmployeeApiService, EmployeeRequest } from './employee-api.service';
+import { EmployeeApiModel, EmployeeApiService, EmployeeRequest, EmploymentStatus } from './employee-api.service';
 
 interface Employee {
   id: number;
   employeeId: string;
+  firstName: string;
+  lastName: string;
   name: string;
   role: string;
   phone: string;
@@ -37,6 +39,10 @@ export class Employees implements OnInit {
   isEditing = false;
   isLoading = false;
   errorMessage = '';
+  notificationMessage = '';
+  notificationType: 'success' | 'error' = 'success';
+
+  private notificationTimeout?: ReturnType<typeof setTimeout>;
 
   formEmployee: Employee = this.emptyEmployee();
 
@@ -116,15 +122,18 @@ export class Employees implements OnInit {
 
   saveEmployee(): void {
 
-    if (!this.formEmployee.name.trim() ||
+    if (!this.formEmployee.firstName.trim() ||
+        !this.formEmployee.lastName.trim() ||
         !this.formEmployee.employeeId.trim() ||
         !this.formEmployee.role.trim()) {
+      this.showNotification('error', 'First name, last name, employee ID, and role are required.');
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
     const request = this.toRequest(this.formEmployee);
+    const action = this.isEditing ? 'updated' : 'created';
     const operation = this.isEditing
       ? this.employeeApi.update(this.formEmployee.id, request)
       : this.employeeApi.create(request);
@@ -132,9 +141,10 @@ export class Employees implements OnInit {
     operation.subscribe({
       next: () => {
         this.closeForm();
+        this.showNotification('success', `Employee ${action} successfully.`);
         this.loadEmployees();
       },
-      error: error => this.handleError(error),
+      error: error => this.handleSaveError(error),
       complete: () => this.isLoading = false
     });
   }
@@ -196,6 +206,8 @@ export class Employees implements OnInit {
     return {
       id: employee.id,
       employeeId: employee.employeeCode,
+      firstName: employee.firstName,
+      lastName: employee.lastName,
       name: [employee.firstName, employee.lastName].filter(Boolean).join(' '),
       role: employee.role,
       phone: employee.phone ?? '',
@@ -205,31 +217,47 @@ export class Employees implements OnInit {
   }
 
   private toRequest(employee: Employee): EmployeeRequest {
-    const nameParts = employee.name.trim().split(/\s+/);
-    const firstName = nameParts.shift() ?? '';
     return {
       employeeCode: employee.employeeId.trim(),
-      firstName,
-      lastName: nameParts.join(' '),
+      firstName: employee.firstName.trim(),
+      lastName: employee.lastName.trim(),
       role: employee.role,
       phone: employee.phone.trim(),
       managerId: null,
-      employmentStatus: employee.status,
+      employmentStatus: employee.status.toLowerCase() as EmploymentStatus,
       hireDate: employee.joinDate
     };
   }
 
   private handleError(error: HttpErrorResponse): void {
     this.isLoading = false;
+    this.errorMessage = this.getErrorMessage(error);
+  }
+
+  private handleSaveError(error: HttpErrorResponse): void {
+    this.isLoading = false;
+    this.showNotification('error', this.getErrorMessage(error));
+  }
+
+  private getErrorMessage(error: HttpErrorResponse): string {
     const apiError = error.error as { message?: string; errors?: Record<string, string> } | null;
     const fieldErrors = apiError?.errors ? Object.values(apiError.errors).join(' ') : '';
-    this.errorMessage = fieldErrors || apiError?.message || 'Unable to communicate with the employee service.';
+    return fieldErrors || apiError?.message || 'Unable to communicate with the employee service.';
+  }
+
+  private showNotification(type: 'success' | 'error', message: string): void {
+    this.notificationType = type;
+    this.notificationMessage = message;
+    clearTimeout(this.notificationTimeout);
+    this.notificationTimeout = setTimeout(() => this.notificationMessage = '', 4000);
   }
 
   private emptyEmployee(): Employee {
     return {
       id: 0,
       employeeId: '',
+      firstName: '',
+      lastName: '',
       name: '',
       role: 'Hub Assistant',
       phone: '',

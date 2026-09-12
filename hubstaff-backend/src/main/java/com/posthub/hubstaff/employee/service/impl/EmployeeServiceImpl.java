@@ -1,6 +1,7 @@
 package com.posthub.hubstaff.employee.service.impl;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setManager(manager);
         }
 
-        employee.setEmploymentStatus(request.getEmploymentStatus());
+        employee.setEmploymentStatus(normalizeEmploymentStatus(request.getEmploymentStatus()));
         employee.setHireDate(request.getHireDate());
 
         Employee savedEmployee = employeeRepository.save(employee);
@@ -82,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setManager(null);
         }
 
-        employee.setEmploymentStatus(request.getEmploymentStatus());
+        employee.setEmploymentStatus(normalizeEmploymentStatus(request.getEmploymentStatus()));
         employee.setHireDate(request.getHireDate());
 
         Employee updatedEmployee = employeeRepository.save(employee);
@@ -121,5 +122,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private ResourceNotFoundException employeeNotFound(Long id) {
         return new ResourceNotFoundException("EMPLOYEE_NOT_FOUND", "Employee not found with id: " + id);
+    }
+
+    private String normalizeEmploymentStatus(String employmentStatus) {
+        return employmentStatus.toLowerCase(Locale.ROOT);
     }
 }

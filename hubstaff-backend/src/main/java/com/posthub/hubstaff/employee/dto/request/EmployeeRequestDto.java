@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class EmployeeRequestDto {
 
     @NotBlank(message = "Employment status is required")
     @Size(max = 20, message = "Employment status must not exceed 20 characters")
+    @Pattern(regexp = "(?i)^(active|inactive)$", message = "Employment status must be active or inactive")
     private String employmentStatus;
 
     @NotNull(message = "Hire date is required")
