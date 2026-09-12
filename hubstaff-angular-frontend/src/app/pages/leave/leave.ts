@@ -1,12 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+import {
+  LeaveRequestResponseDto,
+  LeaveService
+} from './leave.service';
 
 interface LeaveApplication {
   id: number;
+  employeeId: number;
   employee: string;
   role: string;
-  type: 'Annual Leave' | 'Medical Leave' | 'Emergency Leave';
+  type: string;
+  leaveTypeId: number;
   startDate: string;
   endDate: string;
   days: number;
@@ -25,7 +32,7 @@ interface LeaveApplication {
   templateUrl: './leave.html',
   styleUrl: './leave.css'
 })
-export class Leave {
+export class Leave implements OnInit {
 
   search = '';
 
@@ -35,156 +42,234 @@ export class Leave {
 
   showDetails = false;
 
-  leaveApplications: LeaveApplication[] = [
+  leaveApplications: LeaveApplication[] = [];
 
-    {
-      id: 1,
-      employee: 'Nur Aisyah',
-      role: 'Counter Staff',
-      type: 'Annual Leave',
-      startDate: '10 Sep 2026',
-      endDate: '11 Sep 2026',
-      days: 2,
-      reason: 'Family matters',
-      appliedDate: '07 Sep 2026',
-      status: 'Pending'
-    },
+  pendingCount = 0;
+  approvedCount = 0;
+  rejectedCount = 0;
+  totalCount = 0;
 
-    {
-      id: 2,
-      employee: 'Muhammad Ali',
-      role: 'Delivery Handler',
-      type: 'Medical Leave',
-      startDate: '08 Sep 2026',
-      endDate: '08 Sep 2026',
-      days: 1,
-      reason: 'Medical appointment',
-      appliedDate: '08 Sep 2026',
-      status: 'Approved'
-    },
+  constructor(private leaveService: LeaveService) {}
 
-    {
-      id: 3,
-      employee: 'Siti Nur',
-      role: 'Counter Staff',
-      type: 'Annual Leave',
-      startDate: '22 Sep 2026',
-      endDate: '23 Sep 2026',
-      days: 2,
-      reason: 'Personal matters',
-      appliedDate: '08 Sep 2026',
-      status: 'Pending'
-    },
+  ngOnInit(): void {
+    this.loadLeaveRequests();
+    this.loadSummary();
+  }
 
-    {
-      id: 4,
-      employee: 'Daniel Lim',
-      role: 'Hub Assistant',
-      type: 'Emergency Leave',
-      startDate: '04 Sep 2026',
-      endDate: '04 Sep 2026',
-      days: 1,
-      reason: 'Family emergency',
-      appliedDate: '04 Sep 2026',
-      status: 'Rejected'
-    },
+  loadLeaveRequests(): void {
 
-    {
-      id: 5,
-      employee: 'Farah Ahmad',
-      role: 'Counter Staff',
-      type: 'Annual Leave',
-      startDate: '28 Sep 2026',
-      endDate: '30 Sep 2026',
-      days: 3,
-      reason: 'Holiday',
-      appliedDate: '01 Sep 2026',
-      status: 'Approved'
+    this.leaveService
+      .getAllLeaveRequests()
+      .subscribe({
+        next: (response) => {
+
+          this.leaveApplications =
+            response.data.map(leave =>
+              this.mapToLeaveApplication(leave)
+            );
+
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load leave requests',
+            error
+          );
+        }
+      });
+  }
+
+  loadSummary(): void {
+
+    this.leaveService
+      .getSummary()
+      .subscribe({
+        next: (response) => {
+
+          this.pendingCount =
+            response.data.pending;
+
+          this.approvedCount =
+            response.data.approved;
+
+          this.rejectedCount =
+            response.data.rejected;
+
+          this.totalCount =
+            response.data.total;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load leave summary',
+            error
+          );
+        }
+      });
+  }
+
+  mapToLeaveApplication(
+    leave: LeaveRequestResponseDto
+  ): LeaveApplication {
+
+    return {
+      id: leave.id,
+      employeeId: leave.employeeId,
+
+      // Temporary display values.
+      // We will connect employee API later.
+      employee: leave.employeeName,
+      role: leave.employeeRole,
+
+      leaveTypeId: leave.leaveTypeId,
+      type: leave.leaveTypeName,
+
+      startDate: this.formatDate(leave.startDate),
+      endDate: this.formatDate(leave.endDate),
+
+      days: leave.totalDays,
+
+      reason: leave.reason,
+
+      appliedDate: this.formatDateTime(
+        leave.appliedAt
+      ),
+
+      status: this.formatStatus(
+        leave.status
+      )
+    };
+  }
+
+  formatStatus(status: string):
+    'Pending' | 'Approved' | 'Rejected' {
+
+    const normalized =
+      status.toLowerCase();
+
+    if (normalized === 'approved') {
+      return 'Approved';
     }
 
-  ];
+    if (normalized === 'rejected') {
+      return 'Rejected';
+    }
 
+    return 'Pending';
+  }
+
+  formatDate(date: string): string {
+
+    const value = new Date(date);
+
+    return value.toLocaleDateString(
+      'en-GB',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }
+    );
+  }
+
+  formatDateTime(date: string): string {
+
+    const value = new Date(date);
+
+    return value.toLocaleDateString(
+      'en-GB',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }
+    );
+  }
 
   get filteredApplications(): LeaveApplication[] {
 
-    const query = this.search
-      .toLowerCase()
-      .trim();
-
-    return this.leaveApplications.filter(leave => {
-
-      const matchesSearch =
-        !query ||
-        leave.employee.toLowerCase().includes(query) ||
-        leave.role.toLowerCase().includes(query) ||
-        leave.type.toLowerCase().includes(query);
-
-      const matchesStatus =
-        this.selectedStatus === 'All' ||
-        leave.status === this.selectedStatus;
-
-      return matchesSearch && matchesStatus;
-
-    });
-  }
-
-
-  get pendingCount(): number {
     return this.leaveApplications.filter(
-      leave => leave.status === 'Pending'
-    ).length;
+      leave => {
+
+        const query =
+          this.search
+            .toLowerCase()
+            .trim();
+
+        const matchesSearch =
+          !query ||
+          leave.employee
+            .toLowerCase()
+            .includes(query) ||
+          leave.role
+            .toLowerCase()
+            .includes(query) ||
+          leave.type
+            .toLowerCase()
+            .includes(query);
+
+        const matchesStatus =
+          this.selectedStatus === 'All' ||
+          leave.status === this.selectedStatus;
+
+        return matchesSearch &&
+          matchesStatus;
+      }
+    );
   }
 
+  viewDetails(
+    leave: LeaveApplication
+  ): void {
 
-  get approvedCount(): number {
-    return this.leaveApplications.filter(
-      leave => leave.status === 'Approved'
-    ).length;
+    this.leaveService
+      .getLeaveRequestById(leave.id)
+      .subscribe({
+        next: (response) => {
+
+          this.selectedLeave =
+            this.mapToLeaveApplication(
+              response.data
+            );
+
+          this.showDetails = true;
+        },
+        error: (error) => {
+          console.error(
+            'Failed to load leave request',
+            error
+          );
+        }
+      });
   }
-
-
-  get rejectedCount(): number {
-    return this.leaveApplications.filter(
-      leave => leave.status === 'Rejected'
-    ).length;
-  }
-
-
-  viewDetails(leave: LeaveApplication): void {
-
-    this.selectedLeave = leave;
-
-    this.showDetails = true;
-
-  }
-
 
   closeDetails(): void {
 
     this.selectedLeave = null;
-
     this.showDetails = false;
-
   }
 
+  approveLeave(
+    leave: LeaveApplication
+  ): void {
 
-  approveLeave(leave: LeaveApplication): void {
+    // Approval API will be integrated later.
 
-    leave.status = 'Approved';
-
-    this.closeDetails();
-
+    console.log(
+      'Approve leave:',
+      leave.id
+    );
   }
 
+  rejectLeave(
+    leave: LeaveApplication
+  ): void {
 
-  rejectLeave(leave: LeaveApplication): void {
+    // Rejection API will be integrated later.
 
-    leave.status = 'Rejected';
-
-    this.closeDetails();
-
+    console.log(
+      'Reject leave:',
+      leave.id
+    );
   }
-
 
   getInitials(name: string): string {
 
@@ -194,7 +279,5 @@ export class Leave {
       .join('')
       .slice(0, 2)
       .toUpperCase();
-
   }
-
 }

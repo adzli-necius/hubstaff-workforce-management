@@ -12,8 +12,14 @@ import lombok.Setter;
 public class LeaveRequestResponseDto {
 
     private Long id;
+
     private Long employeeId;
+    private String employeeName;
+    private String employeeRole;
+
     private Long leaveTypeId;
+    private String leaveTypeName;
+
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal totalDays;
