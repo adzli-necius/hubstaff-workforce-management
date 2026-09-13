@@ -1,0 +1,139 @@
+<div class="login-page">
+
+  <div class="login-container">
+
+    <!-- Logo / Brand -->
+    <div class="brand">
+      <div class="brand-logo">H</div>
+
+      <div class="brand-text">
+        <h1>Post Hub</h1>
+        <span>Workforce Management</span>
+      </div>
+    </div>
+
+
+    <!-- Login Card -->
+    <div class="login-card">
+
+      <div class="login-header">
+        <h2>Welcome back</h2>
+        <p>Sign in to your account to continue.</p>
+      </div>
+
+
+      <form (ngSubmit)="login()">
+
+        <!-- Email -->
+        <div class="form-group">
+
+          <label for="email">
+            Email address
+          </label>
+
+          <div class="input-wrapper">
+
+            <span class="input-icon">✉</span>
+
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- Password -->
+        <div class="form-group">
+
+          <div class="password-label">
+
+            <label for="password">
+              Password
+            </label>
+
+            <button
+              type="button"
+              class="forgot-link"
+              (click)="forgotPassword()">
+
+              Forgot password?
+
+            </button>
+
+          </div>
+
+
+          <div class="input-wrapper">
+
+            <span class="input-icon">🔒</span>
+
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePassword()">
+
+              {{ showPassword ? 'Hide' : 'Show' }}
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Remember Me -->
+        <div class="login-options">
+
+          <label class="remember">
+
+            <input
+              type="checkbox"
+              name="rememberMe"
+              [(ngModel)]="rememberMe"
+            />
+
+            <span>Remember me</span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Login Button -->
+        <button
+          type="submit"
+          class="login-button">
+
+          Sign in
+
+        </button>
+
+      </form>
+
+    </div>
+
+
+    <!-- Footer -->
+    <p class="footer-text">
+      © 2026 Post Hub. All rights reserved.
+    </p>
+
+  </div>
+
+</div>

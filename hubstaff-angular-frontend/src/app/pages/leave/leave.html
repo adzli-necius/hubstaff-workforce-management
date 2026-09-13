@@ -20,61 +20,89 @@
 
   <div class="stats-grid">
 
-    <div class="stat-card">
+    <!-- Pending -->
+    <div class="stat-card pending">
 
-      <div class="stat-icon orange">
+      <div class="stat-icon">
         ◷
       </div>
 
-      <div>
+      <div class="stat-content">
         <span>Pending</span>
-        <strong>{{ pendingCount }}</strong>
-        <small>Awaiting approval</small>
+
+        <strong>
+          {{ pendingCount }}
+        </strong>
+
+        <small>
+          Awaiting approval
+        </small>
       </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- Approved -->
+    <div class="stat-card approved">
 
-      <div class="stat-icon green">
+      <div class="stat-icon">
         ✓
       </div>
 
-      <div>
+      <div class="stat-content">
         <span>Approved</span>
-        <strong>{{ approvedCount }}</strong>
-        <small>Applications</small>
+
+        <strong>
+          {{ approvedCount }}
+        </strong>
+
+        <small>
+          Applications
+        </small>
       </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- Rejected -->
+    <div class="stat-card rejected">
 
-      <div class="stat-icon red">
+      <div class="stat-icon">
         ×
       </div>
 
-      <div>
+      <div class="stat-content">
         <span>Rejected</span>
-        <strong>{{ rejectedCount }}</strong>
-        <small>Applications</small>
+
+        <strong>
+          {{ rejectedCount }}
+        </strong>
+
+        <small>
+          Applications
+        </small>
       </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- Total -->
+    <div class="stat-card total">
 
-      <div class="stat-icon blue">
+      <div class="stat-icon">
         ▣
       </div>
 
-      <div>
+      <div class="stat-content">
         <span>Total Requests</span>
-        <strong>{{ totalCount }}</strong>
-        <small>All applications</small>
+
+        <strong>
+          {{ totalCount }}
+        </strong>
+
+        <small>
+          All applications
+        </small>
       </div>
 
     </div>
@@ -88,6 +116,7 @@
 
   <div class="panel leave-panel">
 
+    <!-- Panel heading -->
     <div class="panel-heading">
 
       <div>
@@ -111,7 +140,9 @@
       />
 
 
-      <select [(ngModel)]="selectedStatus">
+      <select
+        [(ngModel)]="selectedStatus"
+      >
 
         <option value="All">
           All Status

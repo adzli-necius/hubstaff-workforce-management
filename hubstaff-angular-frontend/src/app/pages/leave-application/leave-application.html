@@ -1,0 +1,223 @@
+<section class="leave-application-page">
+
+  <!-- Page heading -->
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">TIME OFF</p>
+      <h2>Apply for leave</h2>
+      <p class="page-description">
+        Send a leave request to your manager for approval.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- Leave balance cards -->
+  <div class="leave-balances">
+
+    <!-- Annual Leave -->
+    <div class="balance-card annual">
+      <div class="balance-icon">A</div>
+
+      <div class="balance-content">
+        <span>Annual Leave</span>
+        <strong>12 <small>days</small></strong>
+        <p>Available this year</p>
+      </div>
+    </div>
+
+
+    <!-- Medical Leave -->
+    <div class="balance-card medical">
+      <div class="balance-icon">M</div>
+
+      <div class="balance-content">
+        <span>Medical Leave</span>
+        <strong>14 <small>days</small></strong>
+        <p>Available this year</p>
+      </div>
+    </div>
+
+
+    <!-- Emergency Leave -->
+    <div class="balance-card emergency">
+      <div class="balance-icon">E</div>
+
+      <div class="balance-content">
+        <span>Emergency Leave</span>
+        <strong>3 <small>days</small></strong>
+        <p>Available this year</p>
+      </div>
+    </div>
+
+
+    <!-- Unpaid Leave -->
+    <div class="balance-card unpaid">
+      <div class="balance-icon">U</div>
+
+      <div class="balance-content">
+        <span>Unpaid Leave</span>
+        <strong>∞</strong>
+        <p>No balance required</p>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Application layout -->
+  <div class="application-layout">
+
+    <!-- Leave application form -->
+    <form
+      class="application-card"
+      #leaveForm="ngForm"
+      (ngSubmit)="submitApplication()"
+    >
+
+      <div class="card-heading">
+        <div>
+          <h3>Leave details</h3>
+          <p>Complete the form below to submit your request.</p>
+        </div>
+
+        <span class="required-note">* Required</span>
+      </div>
+
+
+      <div class="form-grid">
+
+        <!-- Leave type -->
+        <label>
+          <span>Leave type <b>*</b></span>
+
+          <select
+            name="leaveType"
+            [(ngModel)]="form.leaveType"
+            required
+          >
+            <option value="" disabled>
+              Select leave type
+            </option>
+
+            <option value="Annual Leave">
+              Annual leave
+            </option>
+
+            <option value="Medical Leave">
+              Medical leave
+            </option>
+
+            <option value="Emergency Leave">
+              Emergency leave
+            </option>
+
+            <option value="Unpaid Leave">
+              Unpaid leave
+            </option>
+          </select>
+        </label>
+
+
+        <!-- Spacer -->
+        <div class="field-spacer"></div>
+
+
+        <!-- Start date -->
+        <label>
+          <span>Start date <b>*</b></span>
+
+          <input
+            type="date"
+            name="startDate"
+            [min]="minimumDate"
+            [(ngModel)]="form.startDate"
+            required
+          />
+        </label>
+
+
+        <!-- End date -->
+        <label>
+          <span>End date <b>*</b></span>
+
+          <input
+            type="date"
+            name="endDate"
+            [min]="form.startDate || minimumDate"
+            [(ngModel)]="form.endDate"
+            required
+          />
+        </label>
+
+
+        <!-- Reason -->
+        <label class="full-width">
+          <span>Reason <b>*</b></span>
+
+          <textarea
+            name="reason"
+            [(ngModel)]="form.reason"
+            placeholder="Add a short reason for your leave request"
+            rows="5"
+            required
+          ></textarea>
+        </label>
+
+      </div>
+
+
+      <!-- Form footer -->
+      <div class="form-footer">
+
+        <p
+          class="success-message"
+          *ngIf="submitted"
+          role="status"
+        >
+          {{ submittedMessage }}
+        </p>
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="resetApplication()"
+          >
+            Clear
+          </button>
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="leaveForm.invalid"
+          >
+            Submit application
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+
+    <!-- Guidance card -->
+    <aside class="guidance-card">
+
+      <div class="guidance-icon">i</div>
+
+      <h3>Before you submit</h3>
+
+      <ul>
+        <li>Check that your dates are correct.</li>
+        <li>Use the reason field to add useful context.</li>
+        <li>Your manager will review the request.</li>
+      </ul>
+
+    </aside>
+
+  </div>
+
+</section>

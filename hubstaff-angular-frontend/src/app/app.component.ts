@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -58,7 +59,9 @@ export class AppComponent {
     { name: 'Siti Nur', type: 'Annual Leave', dates: '22 Sep – 23 Sep', status: 'Pending' }
   ];
 
-  constructor() {
+  constructor(
+    public router: Router
+  ) {
     setInterval(() => this.currentTime = new Date(), 1000);
   }
 
