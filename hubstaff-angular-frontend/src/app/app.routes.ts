@@ -6,6 +6,7 @@ import { Leave } from './pages/leave/leave';
 import { LeaveApplication } from './pages/leave-application/leave-application';
 import { Employees } from './pages/employees/employees';
 import { Login } from './auth/login/login';
+import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
 
@@ -16,27 +17,32 @@ export const routes: Routes = [
 
   {
     path: 'dashboard',
-    component: Dashboard
+    component: Dashboard,
+    canActivate: [authGuard]
   },
 
   {
     path: 'attendance',
-    component: Attendance
+    component: Attendance,
+    canActivate: [authGuard]
   },
 
   {
     path: 'leave/apply',
-    component: LeaveApplication
+    component: LeaveApplication,
+    canActivate: [authGuard]
   },
 
   {
     path: 'leave',
-    component: Leave
+    component: Leave,
+    canActivate: [authGuard]
   },
 
   {
     path: 'employees',
-    component: Employees
+    component: Employees,
+    canActivate: [authGuard]
   },
 
   {

@@ -24,6 +24,8 @@
 
       <form (ngSubmit)="login()">
 
+        <p class="login-error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+
         <!-- Email -->
         <div class="form-group">
 
@@ -118,9 +120,10 @@
         <!-- Login Button -->
         <button
           type="submit"
-          class="login-button">
+          class="login-button"
+          [disabled]="isLoading">
 
-          Sign in
+          {{ isLoading ? 'Signing in...' : 'Sign in' }}
 
         </button>
 
