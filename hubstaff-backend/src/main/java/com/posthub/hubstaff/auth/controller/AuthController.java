@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import com.posthub.hubstaff.auth.dto.LoginRequest;
 import com.posthub.hubstaff.auth.dto.LoginResponse;
@@ -36,10 +37,13 @@ public class AuthController {
 
     @PostMapping("/users")
     public ResponseEntity<ApiResponse<LoginResponse.AuthenticatedUser>> createUser(
-            @Valid @RequestBody CreateUserRequest request) {
+            @Valid @RequestBody CreateUserRequest request,
+            Authentication authentication) {
+        boolean managerRequest = authentication.getAuthorities().stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_MANAGER"));
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
                 HttpStatus.CREATED.value(), "USER_CREATED", "User account created successfully",
-                userAccountService.createUser(request)));
+            userAccountService.createUser(request, managerRequest)));
     }
 
     @PostMapping("/setup-admin")

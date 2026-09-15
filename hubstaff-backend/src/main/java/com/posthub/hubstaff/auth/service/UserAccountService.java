@@ -78,8 +78,15 @@ public class UserAccountService {
         }
 
     @Transactional
-    public LoginResponse.AuthenticatedUser createUser(CreateUserRequest request) {
+    public LoginResponse.AuthenticatedUser createUser(CreateUserRequest request, boolean managerRequest) {
         String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
+
+        if (managerRequest && request.getRoles().stream()
+                .map(String::trim)
+                .anyMatch(name -> name.equalsIgnoreCase("ADMIN"))) {
+            throw new BusinessRuleException(
+                    "ADMIN_ROLE_NOT_ALLOWED", "Managers cannot create administrator accounts");
+        }
 
         if (userAccountRepository.findByEmailIgnoreCase(email).isPresent()) {
             throw new BusinessRuleException("EMAIL_ALREADY_EXISTS", "A user with this email already exists");
@@ -97,9 +104,7 @@ public class UserAccountService {
         Set<Role> roles = request.getRoles().stream()
                 .map(String::trim)
                 .map(name -> name.toUpperCase(Locale.ROOT))
-                .map(name -> roleRepository.findByNameIgnoreCase(name)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "ROLE_NOT_FOUND", "Role not found: " + name)))
+                .map(this::findOrCreateRole)
                 .collect(Collectors.toCollection(HashSet::new));
 
         UserAccount account = new UserAccount();
@@ -110,6 +115,15 @@ public class UserAccountService {
 
         UserAccount saved = userAccountRepository.save(account);
         return toResponse(saved);
+    }
+
+    private Role findOrCreateRole(String name) {
+        return roleRepository.findByNameIgnoreCase(name)
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(name);
+                    return roleRepository.save(role);
+                });
     }
 
     private LoginResponse.AuthenticatedUser toResponse(UserAccount account) {

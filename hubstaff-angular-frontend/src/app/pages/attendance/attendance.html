@@ -17,15 +17,10 @@
   <!-- Attendance Card -->
   <div class="attendance-card">
 
-    <label class="employee-selector">
-      <span>Employee</span>
-      <select [(ngModel)]="selectedEmployeeId" (ngModelChange)="onEmployeeChange()">
-        <option [ngValue]="null">Select an employee</option>
-        <option *ngFor="let employee of employees" [ngValue]="employee.id">
-          {{ employee.firstName }} {{ employee.lastName }} ({{ employee.employeeCode }})
-        </option>
-      </select>
-    </label>
+    <div class="employee-label">
+      <span>Signed in as</span>
+      <strong>{{ currentUserName }}</strong>
+    </div>
 
     <p *ngIf="errorMessage" class="attendance-error">{{ errorMessage }}</p>
 
@@ -105,7 +100,76 @@
 
     </div>
 
+    <div class="overtime-panel" *ngIf="clockOutTime">
+      <div>
+        <strong>Overtime</strong>
+        <span *ngIf="!overtimeRecord">Start a separate overtime session after clocking out.</span>
+        <span *ngIf="overtimeRecord && !overtimeRecord.overtimeEnd">
+          Started {{ overtimeRecord.overtimeStart | date:'hh:mm a' }}
+        </span>
+        <span *ngIf="overtimeRecord?.overtimeEnd">
+          {{ overtimeRecord?.requestedMinutes }} minutes · {{ overtimeRecord?.status | titlecase }}
+        </span>
+      </div>
+
+      <div class="overtime-actions" *ngIf="!overtimeRecord || overtimeRecord.overtimeEnd">
+        <input
+          *ngIf="!overtimeRecord"
+          type="text"
+          [(ngModel)]="overtimeReason"
+          placeholder="Reason (optional)"
+          maxlength="500">
+        <button type="button" (click)="startOvertime()" [disabled]="isOvertimeSubmitting || !!(overtimeRecord && !overtimeRecord.overtimeEnd)">
+          Start overtime
+        </button>
+      </div>
+
+      <button
+        *ngIf="overtimeRecord && !overtimeRecord.overtimeEnd"
+        type="button"
+        class="overtime-end-button"
+        (click)="endOvertime()"
+        [disabled]="isOvertimeSubmitting">
+        End overtime
+      </button>
+    </div>
+
   </div>
+
+  <section class="history-section">
+    <div class="history-header">
+      <div>
+        <h3>Attendance history</h3>
+        <p>Your recorded attendance history</p>
+      </div>
+    </div>
+
+    <p *ngIf="isLoadingHistory" class="history-state">Loading attendance history...</p>
+    <p *ngIf="!isLoadingHistory && attendanceHistory.length === 0" class="history-state">
+      No attendance records yet.
+    </p>
+
+    <div *ngIf="!isLoadingHistory && attendanceHistory.length > 0" class="history-table-wrapper">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Clock in</th>
+            <th>Clock out</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of attendanceHistory">
+            <td>{{ record.attendanceDate | date:'EEE, d MMM y' }}</td>
+            <td>{{ record.clockIn ? (record.clockIn | date:'hh:mm a') : '--' }}</td>
+            <td>{{ record.clockOut ? (record.clockOut | date:'hh:mm a') : '--' }}</td>
+            <td><span class="history-status">{{ record.status | titlecase }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
 
   <!-- =====================================================
@@ -140,13 +204,31 @@
       <!-- Description -->
       <p>
 
-        Are you sure you want to
+        {{ pendingClockAction === 'in' && !pendingLocation
+            ? 'Choose how you are working today.'
+            : 'Confirm your attendance action.' }}
 
-        <strong>
-          {{ pendingClockAction === 'in' ? 'clock in' : 'clock out' }}
-        </strong>?
+        <strong *ngIf="pendingClockAction === 'in' && pendingLocation">
+          {{ pendingWorkMode === 'OVERTIME' ? 'start overtime' : (pendingWorkMode === 'WORKING_ON_LEAVE' ? 'clock in while on leave' : 'clock in') }}
+        </strong>
+        <strong *ngIf="pendingClockAction === 'out' && pendingLocation">clock out</strong>
 
       </p>
+
+      <div class="work-mode-options" *ngIf="pendingClockAction === 'in' && !pendingLocation">
+        <button type="button" [class.selected]="pendingWorkMode === 'NORMAL'" (click)="selectWorkMode('NORMAL')">
+          <strong>Normal</strong>
+          <span>Regular working hours</span>
+        </button>
+        <button type="button" [class.selected]="pendingWorkMode === 'OVERTIME'" (click)="selectWorkMode('OVERTIME')">
+          <strong>Overtime</strong>
+          <span>Requires manager approval</span>
+        </button>
+        <button type="button" [class.selected]="pendingWorkMode === 'WORKING_ON_LEAVE'" (click)="selectWorkMode('WORKING_ON_LEAVE')">
+          <strong>Working on leave</strong>
+          <span>Record this day as leave work</span>
+        </button>
+      </div>
 
 
       <!-- Current Time -->
@@ -160,6 +242,18 @@
           {{ currentTime | date:'hh:mm:ss a' }}
         </strong>
 
+      </div>
+
+      <div class="location-details" *ngIf="pendingLocation">
+        <span>Recorded location</span>
+        <strong>{{ pendingLocationName }}</strong>
+        <small *ngIf="isResolvingLocation">Looking up place name...</small>
+        <small *ngIf="!isResolvingLocation">Accuracy: approximately {{ pendingLocation.accuracy | number:'1.0-0' }} metres</small>
+        <small>
+          {{ pendingLocation.latitude | number:'1.4-4' }},
+          {{ pendingLocation.longitude | number:'1.4-4' }}
+        </small>
+        <small>Map data © OpenStreetMap contributors</small>
       </div>
 
 
@@ -177,13 +271,13 @@
         <button
           class="confirm-button"
           [class.confirm-out]="pendingClockAction === 'out'"
-          [disabled]="isSubmitting"
-          (click)="confirmClockAction()"
+          [disabled]="isSubmitting || isLocating"
+          (click)="pendingLocation ? confirmClockAction() : requestLocation()"
         >
 
-          {{ pendingClockAction === 'in'
-              ? (isSubmitting ? 'Clocking In...' : 'Clock In')
-              : (isSubmitting ? 'Clocking Out...' : 'Clock Out')
+          {{ isLocating ? 'Getting location...' : (pendingLocation
+              ? (isSubmitting ? 'Saving...' : 'Confirm')
+              : 'Get current location')
           }}
 
         </button>

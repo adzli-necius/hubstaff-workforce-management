@@ -1,0 +1,78 @@
+.account-page {
+  padding: 30px 38px;
+}
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-header h2 {
+  margin: 0 0 5px;
+  color: #17221f;
+  font-size: 28px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #98a4a1;
+  font-size: 14px;
+}
+
+.account-form {
+  display: grid;
+  gap: 18px;
+  max-width: 560px;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #e2e8eb;
+  border-radius: 14px;
+}
+
+.form-field {
+  display: grid;
+  gap: 7px;
+}
+
+.form-field label {
+  color: #64716d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-field input,
+.form-field select {
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid #dce4e1;
+  border-radius: 8px;
+  color: #17221f;
+  background: #ffffff;
+}
+
+.account-form button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: #f15a24;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.account-form button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.form-message {
+  margin: 0;
+  font-size: 12px;
+}
+
+.form-message.error {
+  color: #b42318;
+}
+
+.form-message.success {
+  color: #3c8068;
+}

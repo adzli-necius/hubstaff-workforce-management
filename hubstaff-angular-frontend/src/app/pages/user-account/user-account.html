@@ -1,0 +1,46 @@
+<section class="account-page">
+  <div class="page-header">
+    <div>
+      <h2>Create user account</h2>
+      <p>Give an employee access to the workforce system.</p>
+    </div>
+  </div>
+
+  <form class="account-form" (ngSubmit)="createAccount()">
+    <div class="form-field">
+      <label for="employee">Employee</label>
+      <select id="employee" name="employee" [(ngModel)]="employeeId" [disabled]="isLoadingEmployees">
+        <option [ngValue]="null">Select an employee</option>
+        <option *ngFor="let employee of employees" [ngValue]="employee.id">
+          {{ employee.firstName }} {{ employee.lastName }} ({{ employee.employeeCode }})
+        </option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="email">Sign-in email</label>
+      <input id="email" name="email" type="email" [(ngModel)]="email" autocomplete="email" placeholder="employee@company.com">
+    </div>
+
+    <div class="form-field">
+      <label for="password">Temporary password</label>
+      <input id="password" name="password" type="password" [(ngModel)]="password" autocomplete="new-password" placeholder="At least 8 characters">
+    </div>
+
+    <div class="form-field">
+      <label for="role">Role</label>
+      <select id="role" name="role" [(ngModel)]="role">
+        <option value="EMPLOYEE">Employee</option>
+        <option value="MANAGER">Manager</option>
+        <option *ngIf="canCreateAdmin" value="ADMIN">Administrator</option>
+      </select>
+    </div>
+
+    <p *ngIf="errorMessage" class="form-message error" role="alert">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="form-message success" role="status">{{ successMessage }}</p>
+
+    <button type="submit" [disabled]="isLoading || isLoadingEmployees">
+      {{ isLoading ? 'Creating account...' : 'Create account' }}
+    </button>
+  </form>
+</section>

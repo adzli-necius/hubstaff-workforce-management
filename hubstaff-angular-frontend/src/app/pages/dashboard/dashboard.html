@@ -1,7 +1,7 @@
 <section class="content">
       <div class="welcome-row">
         <div>
-          <h2>Good morning, Ahmad 👋</h2>
+          <h2>Good morning, {{ userName }}</h2>
           <p>Here’s what’s happening at your hub today.</p>
         </div>
         <div class="date-chip">{{ currentTime | date:'EEEE, d MMMM y' }}</div>
@@ -10,7 +10,7 @@
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon blue">♙</div>
-          <div><span>Total Employees</span><strong>{{ employees.length }}</strong><small>Active staff</small></div>
+            <div><span>Total Employees</span><strong>{{ dashboard?.totalEmployees ?? 0 }}</strong><small>Active staff</small></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon green">✓</div>
@@ -22,7 +22,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon purple">▣</div>
-          <div><span>On Leave</span><strong>{{ leaveCount }}</strong><small>Today</small></div>
+            <div><span>On Leave</span><strong>{{ leaveCount }}</strong><small>Today</small></div>
         </div>
       </div>
 
@@ -42,9 +42,9 @@
             Clock In
         </button>
           <div class="clock-info">
-            <div><span>Clock In</span><strong>--</strong></div>
-            <div><span>Clock Out</span><strong>--</strong></div>
-            <div><span>Working Hours</span><strong>--</strong></div>
+            <div><span>Clock In</span><strong>{{ dashboard?.myAttendance?.clockIn ? (dashboard?.myAttendance?.clockIn | date:'hh:mm a') : '--' }}</strong></div>
+            <div><span>Clock Out</span><strong>{{ dashboard?.myAttendance?.clockOut ? (dashboard?.myAttendance?.clockOut | date:'hh:mm a') : '--' }}</strong></div>
+            <div><span>Working Hours</span><strong>{{ workingHours }}</strong></div>
           </div>
         </div>
 
@@ -60,9 +60,9 @@
           </div>
           <div class="leave-list">
             <div class="leave-item" *ngFor="let leave of leaveRequests">
-              <div class="avatar">{{ getInitials(leave.name) }}</div>
-              <div class="leave-copy"><strong>{{ leave.name }}</strong><span>{{ leave.type }} · {{ leave.dates }}</span></div>
-              <span class="status" [class.pending]="leave.status === 'Pending'" [class.approved]="leave.status === 'Approved'">{{ leave.status }}</span>
+              <div class="avatar">{{ getInitials(leave.employeeName) }}</div>
+              <div class="leave-copy"><strong>{{ leave.employeeName }}</strong><span>{{ leave.leaveType }} · {{ formatLeaveDates(leave) }}</span></div>
+              <span class="status pending">{{ leave.status | titlecase }}</span>
             </div>
           </div>
         </div>
@@ -86,11 +86,11 @@
             <thead><tr><th>EMPLOYEE</th><th>ROLE</th><th>CLOCK IN</th><th>CLOCK OUT</th><th>STATUS</th></tr></thead>
             <tbody>
               <tr *ngFor="let employee of filteredEmployees">
-                <td><div class="employee-cell"><div class="avatar">{{ getInitials(employee.name) }}</div><strong>{{ employee.name }}</strong></div></td>
-                <td>{{ employee.role }}</td>
-                <td>{{ employee.clockIn }}</td>
-                <td>{{ employee.clockOut }}</td>
-                <td><span class="status" [class.present]="employee.status === 'Present'" [class.late]="employee.status === 'Late'" [class.onleave]="employee.status === 'On Leave'">{{ employee.status }}</span></td>
+                <td><div class="employee-cell"><div class="avatar">{{ getInitials(employee.employeeName) }}</div><strong>{{ employee.employeeName }}</strong></div></td>
+                <td>{{ employee.role || '--' }}</td>
+                <td>{{ employee.clockIn ? (employee.clockIn | date:'hh:mm a') : '--' }}</td>
+                <td>{{ employee.clockOut ? (employee.clockOut | date:'hh:mm a') : '--' }}</td>
+                <td><span class="status" [class.present]="displayStatus(employee.status) === 'Present'" [class.onleave]="displayStatus(employee.status) === 'On Leave'">{{ displayStatus(employee.status) }}</span></td>
               </tr>
             </tbody>
           </table>

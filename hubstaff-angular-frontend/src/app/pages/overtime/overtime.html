@@ -1,0 +1,35 @@
+<section class="overtime-page">
+  <div class="page-header">
+    <div>
+      <h2>Overtime approvals</h2>
+      <p>Review overtime sessions submitted by employees.</p>
+    </div>
+  </div>
+
+  <p *ngIf="errorMessage" class="page-error">{{ errorMessage }}</p>
+  <p *ngIf="isLoading" class="empty-state">Loading overtime records...</p>
+  <p *ngIf="!isLoading && records.length === 0" class="empty-state">No pending overtime records.</p>
+
+  <div class="overtime-list" *ngIf="!isLoading">
+    <article class="overtime-record" *ngFor="let record of records">
+      <div class="record-heading">
+        <strong>{{ record.employeeName }}</strong>
+        <span>{{ record.overtimeStart | date:'EEE, d MMM y, hh:mm a' }}</span>
+      </div>
+      <p>{{ record.reason || 'No reason provided' }}</p>
+      <div class="record-fields">
+        <label>Requested minutes <strong>{{ record.requestedMinutes ?? '--' }}</strong></label>
+        <label>Approved minutes
+          <input type="number" min="0" [max]="record.requestedMinutes ?? 0" [(ngModel)]="approvedMinutes[record.id]">
+        </label>
+        <label>Manager note
+          <input type="text" maxlength="500" [(ngModel)]="managerNotes[record.id]" placeholder="Optional note">
+        </label>
+      </div>
+      <div class="record-actions">
+        <button class="reject" type="button" (click)="reject(record)">Reject</button>
+        <button type="button" (click)="approve(record)">Approve</button>
+      </div>
+    </article>
+  </div>
+</section>

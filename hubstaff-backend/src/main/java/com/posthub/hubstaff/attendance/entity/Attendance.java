@@ -47,8 +47,26 @@ public class Attendance {
     @Column(name = "clock_in")
     private LocalDateTime clockIn;
 
+    @Column(name = "clock_in_latitude", precision = 10, scale = 7)
+    private java.math.BigDecimal clockInLatitude;
+
+    @Column(name = "clock_in_longitude", precision = 10, scale = 7)
+    private java.math.BigDecimal clockInLongitude;
+
+    @Column(name = "clock_in_accuracy", precision = 10, scale = 2)
+    private java.math.BigDecimal clockInAccuracy;
+
     @Column(name = "clock_out")
     private LocalDateTime clockOut;
+
+    @Column(name = "clock_out_latitude", precision = 10, scale = 7)
+    private java.math.BigDecimal clockOutLatitude;
+
+    @Column(name = "clock_out_longitude", precision = 10, scale = 7)
+    private java.math.BigDecimal clockOutLongitude;
+
+    @Column(name = "clock_out_accuracy", precision = 10, scale = 2)
+    private java.math.BigDecimal clockOutAccuracy;
 
     @Column(nullable = false, length = 20)
     private String status = "present";

@@ -56,7 +56,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/login", "/api/auth/setup-admin", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
-                    .requestMatchers("/api/auth/users").hasRole("ADMIN")
+                    .requestMatchers("/api/auth/users").hasAnyRole("ADMIN", "MANAGER")
+                    .requestMatchers("/api/overtime/**").hasAnyRole("ADMIN", "MANAGER")
+                    .requestMatchers("/api/attendance/clock-in", "/api/attendance/clock-out", "/api/attendance/today").hasRole("ADMIN")
                     .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(basic -> basic.disable())

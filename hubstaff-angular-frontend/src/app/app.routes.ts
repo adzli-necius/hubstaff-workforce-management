@@ -7,6 +7,9 @@ import { LeaveApplication } from './pages/leave-application/leave-application';
 import { Employees } from './pages/employees/employees';
 import { Login } from './auth/login/login';
 import { authGuard } from './auth/auth.guard';
+import { managerGuard } from './auth/manager.guard';
+import { UserAccount } from './pages/user-account/user-account';
+import { Overtime } from './pages/overtime/overtime';
 
 export const routes: Routes = [
 
@@ -43,6 +46,18 @@ export const routes: Routes = [
     path: 'employees',
     component: Employees,
     canActivate: [authGuard]
+  },
+
+  {
+    path: 'user-accounts/new',
+    component: UserAccount,
+    canActivate: [authGuard, managerGuard]
+  },
+
+  {
+    path: 'overtime',
+    component: Overtime,
+    canActivate: [authGuard, managerGuard]
   },
 
   {

@@ -65,6 +65,20 @@
   background: #fff;
 }
 
+.employee-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 18px;
+  color: #64716d;
+  font-size: 11px;
+}
+
+.employee-label strong {
+  color: #17221f;
+  font-size: 14px;
+}
+
 .attendance-error {
   max-width: 460px;
   margin: 0 auto 16px;
@@ -197,6 +211,121 @@
   font-size: 12px;
 }
 
+.overtime-panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #edf0ef;
+  text-align: left;
+}
+
+.overtime-panel > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.overtime-panel span {
+  color: #64716d;
+  font-size: 11px;
+}
+
+.overtime-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.overtime-actions input {
+  min-width: 0;
+  flex: 1;
+  padding: 9px 10px;
+  border: 1px solid #dce4e1;
+  border-radius: 7px;
+}
+
+.overtime-actions button,
+.overtime-end-button {
+  padding: 9px 13px;
+  border: 0;
+  border-radius: 7px;
+  background: #123f5c;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.overtime-end-button {
+  justify-self: start;
+  background: #f15a24;
+}
+
+.overtime-actions button:disabled,
+.overtime-end-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.history-section {
+  max-width: 900px;
+  margin: 28px auto 0;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8eb;
+  border-radius: 14px;
+}
+
+.history-header h3 {
+  margin: 0 0 4px;
+  color: #17221f;
+  font-size: 18px;
+}
+
+.history-header p {
+  margin: 0;
+  color: #98a4a1;
+  font-size: 12px;
+}
+
+.history-state {
+  margin: 24px 0 0;
+  color: #64716d;
+  font-size: 13px;
+  text-align: center;
+}
+
+.history-table-wrapper {
+  overflow-x: auto;
+  margin-top: 18px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #17221f;
+  font-size: 12px;
+}
+
+.history-table th,
+.history-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid #edf0ef;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.history-table th {
+  color: #64716d;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.history-status {
+  color: #3c8068;
+  font-weight: 700;
+}
+
 
 /* =====================================================
    Modal
@@ -313,6 +442,66 @@
   color: #123f5c;
 
   font-size: 17px;
+}
+
+.location-details {
+  display: grid;
+  gap: 4px;
+  margin: 18px 0;
+  padding: 12px;
+  border: 1px solid #dce4e1;
+  border-radius: 8px;
+  background: #f7faf8;
+  color: #64716d;
+  font-size: 11px;
+}
+
+.location-details strong {
+  color: #17221f;
+  font-size: 13px;
+}
+
+.location-details small {
+  color: #98a4a1;
+  font-size: 10px;
+}
+
+.location-details small:last-child {
+  margin-top: 3px;
+  font-size: 9px;
+}
+
+.work-mode-options {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+  text-align: left;
+}
+
+.work-mode-options button {
+  display: grid;
+  gap: 3px;
+  padding: 12px;
+  border: 1px solid #dce4e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #17221f;
+  text-align: left;
+  cursor: pointer;
+}
+
+.work-mode-options button.selected {
+  border-color: #f15a24;
+  background: #fff6f1;
+}
+
+.work-mode-options strong {
+  font-size: 12px;
+}
+
+.work-mode-options span {
+  color: #64716d;
+  font-size: 10px;
 }
 
 

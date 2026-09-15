@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService } from './auth/auth.service';
 
 interface Employee {
   name: string;
@@ -60,9 +61,23 @@ export class AppComponent {
   ];
 
   constructor(
-    public router: Router
+    public router: Router,
+    private readonly authService: AuthService
   ) {
     setInterval(() => this.currentTime = new Date(), 1000);
+  }
+
+  get canManageUsers(): boolean {
+    return this.authService.hasRole('ADMIN') || this.authService.hasRole('MANAGER');
+  }
+
+  get currentUserName(): string {
+    return this.authService.getCurrentUser()?.name ?? 'Employee';
+  }
+
+  get currentUserRole(): string {
+    const role = this.authService.getCurrentUser()?.roles[0];
+    return role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Employee';
   }
 
   setPage(page: string) {

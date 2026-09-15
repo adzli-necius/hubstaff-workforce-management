@@ -71,6 +71,24 @@
       </button>
 
       <button
+        *ngIf="canManageUsers"
+        routerLink="/user-accounts/new"
+        routerLinkActive="active"
+      >
+        <span>♙</span>
+        User accounts
+      </button>
+
+      <button
+        *ngIf="canManageUsers"
+        routerLink="/overtime"
+        routerLinkActive="active"
+      >
+        <span>◷</span>
+        Overtime approvals
+      </button>
+
+      <button
         [class.active]="activePage === 'Reports'"
         (click)="setPage('Reports')"
       >
@@ -95,12 +113,12 @@
       <div class="mini-profile">
 
         <div class="avatar">
-          AH
+          {{ getInitials(currentUserName) }}
         </div>
 
         <div class="profile-copy">
-          <strong>Ahmad Hakim</strong>
-          <span>Administrator</span>
+          <strong>{{ currentUserName }}</strong>
+          <span>{{ currentUserRole }}</span>
         </div>
 
         <span class="dots">
@@ -147,12 +165,12 @@
         <div class="top-profile">
 
           <div class="avatar small">
-            AH
+            {{ getInitials(currentUserName) }}
           </div>
 
           <div>
-            <strong>Ahmad Hakim</strong>
-            <span>Owner</span>
+            <strong>{{ currentUserName }}</strong>
+            <span>{{ currentUserRole }}</span>
           </div>
 
           <span>⌄</span>
