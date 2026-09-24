@@ -28,6 +28,7 @@
       <div class="nav-label">MAIN</div>
 
       <button
+        *ngIf="canManageUsers"
         routerLink="/dashboard"
         routerLinkActive="active"
       >
@@ -44,6 +45,7 @@
       </button>
 
       <button
+        *ngIf="canManageUsers"
         routerLink="/leave"
         routerLinkActive="active"
       >
@@ -63,6 +65,7 @@
       <div class="nav-label">MANAGEMENT</div>
 
       <button
+        *ngIf="canManageUsers"
         routerLink="/employees"
         routerLinkActive="active"
       >
@@ -124,6 +127,10 @@
         <span class="dots">
           •••
         </span>
+
+        <button type="button" (click)="logout()">
+          Log out
+        </button>
 
       </div>
 

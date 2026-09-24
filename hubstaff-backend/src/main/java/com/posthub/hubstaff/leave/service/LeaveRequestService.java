@@ -12,6 +12,11 @@ public interface LeaveRequestService {
             LeaveRequestCreateRequestDto request
     );
 
+    LeaveRequestResponseDto createLeaveRequestForUser(
+            String email,
+            LeaveRequestCreateRequestDto request
+    );
+
     List<LeaveRequestResponseDto> getAllLeaveRequests();
 
     LeaveRequestResponseDto getLeaveRequestById(Long id);

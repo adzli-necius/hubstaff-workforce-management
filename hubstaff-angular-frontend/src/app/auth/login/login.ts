@@ -42,7 +42,10 @@ export class Login {
     this.isLoading = true;
     this.authService.login(this.email.trim(), this.password).subscribe({
       next: () => {
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+        const defaultUrl = this.authService.hasRole('ADMIN') || this.authService.hasRole('MANAGER')
+          ? '/dashboard'
+          : '/attendance';
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || defaultUrl;
         this.router.navigateByUrl(returnUrl.startsWith('/') ? returnUrl : '/dashboard');
       },
       error: (error: HttpErrorResponse) => {

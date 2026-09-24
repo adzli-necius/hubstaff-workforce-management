@@ -14,7 +14,9 @@ public record AttendanceResponseDto(
         BigDecimal clockInLatitude,
         BigDecimal clockInLongitude,
         BigDecimal clockInAccuracy,
+        String clockInLocationDisplay,
         BigDecimal clockOutLatitude,
         BigDecimal clockOutLongitude,
-        BigDecimal clockOutAccuracy) {
+        BigDecimal clockOutAccuracy,
+        String clockOutLocationDisplay) {
 }

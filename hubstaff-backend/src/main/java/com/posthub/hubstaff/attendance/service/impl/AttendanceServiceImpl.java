@@ -27,6 +27,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final EmployeeRepository employeeRepository;
     private final UserAccountRepository userAccountRepository;
+    private final AttendanceLocationService attendanceLocationService;
 
     @Override
     public AttendanceResponseDto clockIn(Long employeeId) {
@@ -50,6 +51,8 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance.setClockInLatitude(request.latitude());
             attendance.setClockInLongitude(request.longitude());
             attendance.setClockInAccuracy(request.accuracy());
+            attendance.setClockInLocationDisplay(attendanceLocationService.resolveDisplayName(
+                    request.latitude(), request.longitude()));
         }
         attendance.setStatus(toAttendanceStatus(request));
 
@@ -73,6 +76,8 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance.setClockOutLatitude(request.latitude());
             attendance.setClockOutLongitude(request.longitude());
             attendance.setClockOutAccuracy(request.accuracy());
+            attendance.setClockOutLocationDisplay(attendanceLocationService.resolveDisplayName(
+                    request.latitude(), request.longitude()));
         }
         return toResponse(attendanceRepository.save(attendance));
     }
@@ -152,8 +157,10 @@ public class AttendanceServiceImpl implements AttendanceService {
                 attendance.getClockInLatitude(),
                 attendance.getClockInLongitude(),
                 attendance.getClockInAccuracy(),
+                attendance.getClockInLocationDisplay(),
                 attendance.getClockOutLatitude(),
                 attendance.getClockOutLongitude(),
-                attendance.getClockOutAccuracy());
+                attendance.getClockOutAccuracy(),
+                attendance.getClockOutLocationDisplay());
     }
 }

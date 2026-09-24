@@ -56,6 +56,9 @@ public class Attendance {
     @Column(name = "clock_in_accuracy", precision = 10, scale = 2)
     private java.math.BigDecimal clockInAccuracy;
 
+    @Column(name = "clock_in_location_display", length = 255)
+    private String clockInLocationDisplay;
+
     @Column(name = "clock_out")
     private LocalDateTime clockOut;
 
@@ -67,6 +70,9 @@ public class Attendance {
 
     @Column(name = "clock_out_accuracy", precision = 10, scale = 2)
     private java.math.BigDecimal clockOutAccuracy;
+
+    @Column(name = "clock_out_location_display", length = 255)
+    private String clockOutLocationDisplay;
 
     @Column(nullable = false, length = 20)
     private String status = "present";

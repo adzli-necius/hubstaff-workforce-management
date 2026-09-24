@@ -21,7 +21,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
-    canActivate: [authGuard]
+    canActivate: [authGuard, managerGuard]
   },
 
   {
@@ -39,13 +39,13 @@ export const routes: Routes = [
   {
     path: 'leave',
     component: Leave,
-    canActivate: [authGuard]
+    canActivate: [authGuard, managerGuard]
   },
 
   {
     path: 'employees',
     component: Employees,
-    canActivate: [authGuard]
+    canActivate: [authGuard, managerGuard]
   },
 
   {

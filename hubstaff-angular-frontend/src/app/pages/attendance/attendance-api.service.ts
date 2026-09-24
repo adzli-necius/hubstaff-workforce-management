@@ -16,9 +16,11 @@ export interface AttendanceRecord {
   clockInLatitude: number | null;
   clockInLongitude: number | null;
   clockInAccuracy: number | null;
+  clockInLocationDisplay: string | null;
   clockOutLatitude: number | null;
   clockOutLongitude: number | null;
   clockOutAccuracy: number | null;
+  clockOutLocationDisplay: string | null;
 }
 
 export interface AttendanceLocation {

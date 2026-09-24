@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.posthub.hubstaff.employee.entity.Employee;
 import com.posthub.hubstaff.employee.repository.EmployeeRepository;
+import com.posthub.hubstaff.auth.repository.UserAccountRepository;
+import com.posthub.hubstaff.common.exception.ResourceNotFoundException;
 import com.posthub.hubstaff.leave.dto.request.LeaveRequestCreateRequestDto;
 import com.posthub.hubstaff.leave.dto.response.LeaveRequestResponseDto;
 import com.posthub.hubstaff.leave.dto.response.LeaveRequestSummaryResponseDto;
@@ -27,6 +29,21 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     private final LeaveRequestRepository leaveRequestRepository;
     private final LeaveTypeRepository leaveTypeRepository;
     private final EmployeeRepository employeeRepository;
+    private final UserAccountRepository userAccountRepository;
+
+    @Override
+    @Transactional
+    public LeaveRequestResponseDto createLeaveRequestForUser(
+            String email,
+            LeaveRequestCreateRequestDto request) {
+        Long employeeId = userAccountRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "USER_ACCOUNT_NOT_FOUND", "User account not found"))
+                .getEmployee()
+                .getId();
+        request.setEmployeeId(employeeId);
+        return createLeaveRequest(request);
+    }
 
     @Override
     @Transactional

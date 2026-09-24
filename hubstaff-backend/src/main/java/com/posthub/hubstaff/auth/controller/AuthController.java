@@ -13,7 +13,6 @@ import com.posthub.hubstaff.auth.dto.LoginRequest;
 import com.posthub.hubstaff.auth.dto.LoginResponse;
 import com.posthub.hubstaff.auth.service.AuthService;
 import com.posthub.hubstaff.auth.dto.CreateUserRequest;
-import com.posthub.hubstaff.auth.dto.SetupAdminRequest;
 import com.posthub.hubstaff.auth.service.UserAccountService;
 import com.posthub.hubstaff.common.api.ApiResponse;
 
@@ -39,18 +38,11 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse.AuthenticatedUser>> createUser(
             @Valid @RequestBody CreateUserRequest request,
             Authentication authentication) {
-        boolean managerRequest = authentication.getAuthorities().stream()
-            .anyMatch(authority -> authority.getAuthority().equals("ROLE_MANAGER"));
+        boolean canAssignPrivilegedRoles = authentication.getAuthorities().stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
                 HttpStatus.CREATED.value(), "USER_CREATED", "User account created successfully",
-            userAccountService.createUser(request, managerRequest)));
+            userAccountService.createUser(request, canAssignPrivilegedRoles)));
     }
 
-    @PostMapping("/setup-admin")
-    public ResponseEntity<ApiResponse<LoginResponse.AuthenticatedUser>> setupAdmin(
-            @Valid @RequestBody SetupAdminRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(
-                HttpStatus.CREATED.value(), "ADMIN_CREATED", "Initial admin created successfully",
-                userAccountService.setupAdmin(request)));
-    }
 }

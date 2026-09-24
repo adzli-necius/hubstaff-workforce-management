@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -18,7 +18,6 @@ export class Attendance implements OnInit, OnDestroy {
 
   private readonly attendanceApi = inject(AttendanceApiService);
   private readonly authService = inject(AuthService);
-  private readonly http = inject(HttpClient);
 
   currentTime = new Date();
 
@@ -37,7 +36,6 @@ export class Attendance implements OnInit, OnDestroy {
   pendingWorkMode: WorkMode = 'NORMAL';
   pendingLocation: AttendanceLocation | null = null;
   pendingLocationName = '';
-  isResolvingLocation = false;
   isLocating = false;
 
   attendanceHistory: AttendanceRecord[] = [];
@@ -125,9 +123,8 @@ export class Attendance implements OnInit, OnDestroy {
           accuracy: position.coords.accuracy
         };
         this.isLocating = false;
-        this.pendingLocationName = 'Resolving location...';
+        this.pendingLocationName = 'Location captured';
         this.showClockModal = true;
-        this.resolveLocationName(this.pendingLocation);
       },
       error => {
         this.isLocating = false;
@@ -147,7 +144,6 @@ export class Attendance implements OnInit, OnDestroy {
     this.pendingWorkMode = 'NORMAL';
     this.pendingLocation = null;
     this.pendingLocationName = '';
-    this.isResolvingLocation = false;
   }
 
   confirmClockAction(): void {
@@ -188,21 +184,6 @@ export class Attendance implements OnInit, OnDestroy {
         }
         this.errorMessage = this.getErrorMessage(error);
       }
-    });
-  }
-
-  private resolveLocationName(location: AttendanceLocation): void {
-    this.isResolvingLocation = true;
-    const url = 'https://nominatim.openstreetmap.org/reverse'
-      + `?format=jsonv2&zoom=18&lat=${location.latitude}&lon=${location.longitude}`;
-
-    this.http.get<{ display_name?: string }>(url).subscribe({
-      next: response => this.pendingLocationName = response.display_name || 'Location captured',
-      error: () => {
-        this.pendingLocationName = 'Location captured';
-        this.isResolvingLocation = false;
-      },
-      complete: () => this.isResolvingLocation = false
     });
   }
 

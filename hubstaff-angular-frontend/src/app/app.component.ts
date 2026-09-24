@@ -80,6 +80,11 @@ export class AppComponent {
     return role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Employee';
   }
 
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
   setPage(page: string) {
     this.activePage = page;
   }
